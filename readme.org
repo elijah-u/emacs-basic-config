@@ -1,0 +1,46 @@
+#+TITLE: Basic(-ish) Emacs Config
+
+** Background
+
+Not the most basic, but not a full-blown config either. Just enough goodness to try to have emacs in a useful state.
+
+** Packages used:
+- =elpaca= for package management
+- =evil= for sane keybindings
+- =magit= for git goodness
+- =which-key= for all the other key combos 
+- =no-littering= to reduce the files emacs throws everywhere
+- =key-chord=  for jk/kj exit to normal state because sometimes esc is too slow
+- =general= probably overkill, but for easier key mapping
+
+  
+** Possibly worth adding:
+- orderless
+- marginalia
+- embark
+- consult
+- vertico
+- corfu
+- evil-org
+- vterm
+- ace-window
+  
+** other possibly useful/needed bits
+
+*** fix for issue with upgrading =seq=
+- https://github.com/progfolio/elpaca/issues/216
+
+#+begin_src emacs-lisp
+  (defun +elpaca-unload-seq (e)
+    (and (featurep 'seq) (unload-feature 'seq t))
+    (elpaca--continue-build e))
+
+  (defun +elpaca-seq-build-steps ()
+    (append (butlast (if (file-exists-p (expand-file-name "seq" elpaca-builds-directory))
+                         elpaca--pre-built-steps elpaca-build-steps))
+            (list '+elpaca-unload-seq 'elpaca--activate-package)))
+
+  (use-package seq :elpaca `(seq :build ,(+elpaca-seq-build-steps)))
+#+end_src
+
+
